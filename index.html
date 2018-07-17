@@ -1,0 +1,430 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>Automating exploratory data analysis tasks with eda</title>
+
+	<meta name="description" content="Automating exploratory data analysis tasks with eda">
+	<meta name="author" content="William R. Buchanan">
+	<meta name="institution" content="Fayette County Public Schools">
+	<meta name="title" content="Director of Grants, Research, Accountability, and Data">
+	<meta name="location" content="701 East Main Street, Lexington, KY 40502">
+	<meta name="contact" content="Billy.Buchanan@fayette.kyschools.us">
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/simple.css">
+
+	<!-- Theme used for syntax highlighting of code -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- Printing and PDF exports -->
+	<script>
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+	</script>
+</head>
+<body>
+<div class="reveal">
+	<div class="slides">
+		<section>
+			<h2>Automating exploratory data analysis tasks with <a href="http://github.com/wbuchanan/eda"><code>eda</code></a></h2><br>
+			<p>
+				<a href="https://github.com/wbuchanan">Billy Buchanan</a> <br>
+				<a href="https://www.fcps.net">Fayette County Public Schools (Lexington, KY)</a><br>
+				<a href="https://www.fcps.net/Domain/2284">Director of Grants, Research, Accountability, &amp; Data</a><br>
+			</p>
+		</section>
+		<section>
+			<h2>What is <a href="http://github.com/wbuchanan/eda"><code>eda</code></a>?</h2><br><br>
+			<section>
+				<ul>
+					<li>A tool to do more exploratory data analysis with less effort.</li>
+					<li>A combinatorics approach to univariate, bivariate, and some multivariate Exploratory Data Analysis.</li>
+					<li>An example of standing on the shoulders of giants (Cox, 2017).</li>
+				</ul>
+				<aside class="notes">
+					<ul>
+						<li>Discuss story that led to the coding of the original script.</li>
+						<li>Original script including lots of comments was 700 lines long.</li>
+						<li>Without comments the script would be 247 lines long.</li>
+						<li>That's roughly 130 pages of output per line of code in this use case.</li>
+						<li>The resulting PDF compiled from the script was roughly 32,000 pages long.</li>
+					</ul>
+				</aside>
+			</section>
+		</section>
+		<section>
+			<h2>Why <a href="http://github.com/wbuchanan/eda"><code>eda</code></a>?</h2><br><br>
+			<section data-autoslide="2500">
+				<p>If you are in the audience, there is a good chance that <em>you are a human</em>.</p>
+				<aside class="notes">
+					<ul>
+						<li>Exploratory Data Analysis (Tukey, 1977) is a good way to understand your data.</li>
+						<li>Unfortunately, the time it takes to write code to thoroughly explore data grows with the size of the data.</li>
+						<li>If your computer isn't helping you to get to the production possibility frontier of your research, <code>eda</code> can help.</li>
+					</ul>
+				</aside>
+			</section>
+			<section data-autoslide="5000">
+				<p>Your time <strong><em>is</em></strong> valuable.</p>
+				<aside class="notes">
+					<ul>
+						<li>Exploratory Data Analysis (Tukey, 1977) is a good way to understand your data.</li>
+						<li>Unfortunately, the time it takes to write code to thoroughly explore data grows with the size of the data.</li>
+						<li>If your computer isn't helping you to get to the production possibility frontier of your research, <code>eda</code> can help.</li>
+					</ul>
+				</aside>
+			</section>
+			<section data-autoslide="5000">
+				<p>Spend your time on <em>tasks that humans are uniquely qualified to do.</em></p>
+				<aside class="notes">
+					<ul>
+						<li>Exploratory Data Analysis (Tukey, 1977) is a good way to understand your data.</li>
+						<li>Unfortunately, the time it takes to write code to thoroughly explore data grows with the size of the data.</li>
+						<li>If your computer isn't helping you to get to the production possibility frontier of your research, <code>eda</code> can help.</li>
+					</ul>
+				</aside>
+			</section>
+			<section id="oneLinerExample">
+				<p><strong>Try to remember this example for a few moments.</strong></p>
+				<pre>
+					<code  data-trim data-noescape>
+
+						// First load some data
+						sysuse auto.dta, clear
+
+						// I am going to assume that you can call pdflatex from your command line
+						// If that is correct, then the line below is all you need.
+						eda, r(`"`c(pwd)'/edaexamples"') o("minexample") comp
+
+					</code>
+				</pre>
+				<aside class="notes">
+					<ul>
+						<li>Exploratory Data Analysis (Tukey, 1977) is a good way to understand your data.</li>
+						<li>Unfortunately, the time it takes to write code to thoroughly explore data grows with the size of the data.</li>
+						<li>If your computer isn't helping you to get to the production possibility frontier of your research, <code>eda</code> can help.</li>
+						<li>The syntax is going to look like someone spilled alphabet soup in your console, but just remember that this one liner is all you need.</li>
+					</ul>
+				</aside>
+			</section>
+		</section>
+		<section>
+			<h2>What is <a href="http://github.com/wbuchanan/eda"><code>eda</code></a>?</h2>
+
+			<!-- The Syntax -->
+			<section data-autoslide="5000">
+				<br><br><h3>The Syntax</h3>
+				<p>Notice that there are <strong>only three required parameters</strong> to use <a href="http://github.com/wbuchanan/eda"><code>eda</code></a>.</p>
+				<pre>
+					<code data-trim data-noescape>
+						eda  [varlist] [using] [if] [in] , <span style="text-decoration: underline">o</span>utput(string) <span style="text-decoration: underline">r</span>oot(string) [ <span style="text-decoration: underline">id</span>vars(varlist)
+						<span style="text-decoration: underline">str</span>ok[(varlist)] <span style="text-decoration: underline">minn</span>size(integer) <span style="text-decoration: underline">minc</span>at(integer) <span style="text-decoration: underline">maxc</span>at(integer)
+						<span style="text-decoration: underline">catv</span>ars(varlist) <span style="text-decoration: underline">contv</span>ars(varlist) <span style="text-decoration: underline">auth</span>orname(string) <span style="text-decoration: underline">repo</span>rtname(string)
+						scheme(string) keepgph <span style="text-decoration: underline">grlabl</span>ength(integer) <span style="text-decoration: underline">miss</span>ing <span style="text-decoration: underline">perc</span>ent no<span style="text-decoration: underline">bargr</span>aphs
+						<span style="text-decoration: underline">bargra</span>phopts(string) no<span style="text-decoration: underline">piec</span>harts <span style="text-decoration: underline">piech</span>artopts(string) no<span style="text-decoration: underline">histo</span>grams
+						<span style="text-decoration: underline">histog</span>ramopts(string) <span style="text-decoration: underline">kdens</span>ity <span style="text-decoration: underline">kdenso</span>pts(string) <span style="text-decoration: underline">fivenum</span>sum
+						<span style="text-decoration: underline">fnso</span>pts(string) no<span style="text-decoration: underline">distro</span>plots <span style="text-decoration: underline">distrop</span>lotopts(string) no<span style="text-decoration: underline">ladder</span>plots no<span style="text-decoration: underline">scatter</span>plots
+						<span style="text-decoration: underline">lfit</span>[(string)] <span style="text-decoration: underline">qfit</span>[(string)] <span style="text-decoration: underline">lowess</span>[(string)] <span style="text-decoration: underline">fpfit</span>[(string)] <span style="text-decoration: underline">lfitc</span>i[(string)]
+						<span style="text-decoration: underline">qfitc</span>i[(string)] <span style="text-decoration: underline">fpfitc</span>i[(string)] no<span style="text-decoration: underline">box</span>plots no<span style="text-decoration: underline">mosaic</span> no<span style="text-decoration: underline">heat</span>map no<span style="text-decoration: underline">bubble</span>plots
+						<span style="text-decoration: underline">weight</span>type(int) <span style="text-decoration: underline">comp</span>ile <span style="text-decoration: underline">pdfl</span>atex(string) <span style="text-decoration: underline">byg</span>raphs(string) <span style="text-decoration: underline">byv</span>ars(varlist) <span style="text-decoration: underline">bys</span>eq ]
+					</code>
+				</pre>
+				<aside class="notes">
+					<ul>
+						<li>The syntax probably looks difficult, but remember the example from the earlier slide.</li>
+						<li>Options are only needed to modify normal behavior not for execution (that's why they are optional parameters and not required parameters).</li>
+						<li></li>
+					</ul>
+				</aside>
+			</section>
+
+			<!-- Under the hood -->
+			<section>
+				<h3>What does <a href="http://github.com/wbuchanan/eda"><code>eda</code></a> do?</h3>
+				<ul>
+					<li>Checks for and optionally installs dependencies.</li>
+					<li>Classifies variables as categorical or continuous.</li>
+					<li>Creates a LaTeX document to store all your results.</li>
+					<li>Generates uni-, bi-, and some multi-variate data viz.</li>
+					<li>Generates LaTeX tables with appropriate summary statistics.</li>
+					<li><a href="http://github.com/wbuchanan/eda"><code>eda</code></a> works with <a href="https://wbuchanan.github.io/brewscheme"><code>brewscheme</code></a>.</li>
+					<li><a href="http://github.com/wbuchanan/eda"><code>eda</code></a> assumes you want everything unless you tell it otherwise.</li>
+				</ul>
+				<aside class="notes">
+					<ul>
+						<li>Some default parameters use system values retrieved a creturn macros.</li>
+						<li>Talk about default values for variable classification, reporting parameters, and label lengths.</li>
+						<li>Make sure to mention that a variable that is really a constant is dropped from the list</li>
+						<li>Also mention the minimum number of observations needed for a variable to be used.</li>
+						<li>Will use system user name for author if none specified.</li>
+						<li>Will use the name of the file for the subtitle if no subtitle is specified.</li>
+					</ul>
+				</aside>
+			</section>
+
+			<section>
+				<h3>What graphs does <a href="http://github.com/wbuchanan/eda"><code>eda</code></a> create?</h3>
+				<ul>
+					<li>Univariate : </li>
+					<ul>
+						<li><code>symplot</code>, <code>quantile</code>, <code>qnorm</code>, <code>pnorm</code>, &amp; histograms</li>
+						<li>Bar graphs and pie charts for categorical data.</li>
+						<li>Ladder of powers graphs for continuous data.</li>
+					</ul>
+					<li>Bivariate : scatterplots, box plots, &amp; mosaic plots (i.e., <code>spineplot</code>s).</li>
+					<li>Multivariate : bubbleplots &amp; correlation heatmaps.</li>
+				</ul>
+				<aside class="notes">
+					<ul>
+						<li>All graphs include a date/time stamp in the graph caption to make it easier to track run time as well.</li>
+						<li>Talk about conditional graphs in this context.</li>
+						<li>Use bygraphs to specify which graphs to create conditional versions.</li>
+						<li>Use byvars to pass the variable list that would be used for the conditioning.</li>
+						<li>Use the byseq option to iterate over each variable in the byvars option sequentially.</li>
+						<li>Omit the byseq option to condition on all the variables simultaneously.</li>
+					</ul>
+				</aside>
+			</section>
+
+			<!-- Turning Features on and off -->
+			<section>
+				<h3>What else can <a href="http://github.com/wbuchanan/eda"><code>eda</code></a><code>eda</code> do?</h3>
+				<ul>
+					<li>Allows you to turn off types of graphs with <code><span style="text-decoration: underline">no&nbsp;&nbsp;&nbsp;</span>plots</code> options.</li>
+					<li>Creates tables of summary statistics for you automatically.</li>
+					<li>Generates a batch (Windows) or shell (*nix) script to compile the LaTeX and clean up ancillary files.</li>
+				</ul>
+				<aside class="notes">
+					<ul>
+						<li>Mention trying to auto fit the tables by changing the page orientation.</li>
+						<li></li>
+						<li></li>
+					</ul>
+				</aside>
+			</section>
+
+			<!-- An Example -->
+			<section>
+				<h3>Using <a href="http://github.com/wbuchanan/eda"><code>eda</code></a> with <a href="https://wbuchanan.github.io/brewscheme"><code>brewscheme</code></a></h3>
+				<ul>
+					<li>Remember the <a href="#/oneLinerExample">one liner example from earlier</a>?</li>
+					<li>Go to : <a href="https://wbuchanan.github.io/eda/eda-example.pdf">https://wbuchanan.github.io/eda/eda-example.pdf</a> to view an example with the <code>auto.dta</code> dataset.</li>
+					<li>With no <code>bygraph</code> options, this generates a 254 page PDF document.</li>
+				</ul>
+				<aside class="notes">
+					<ul>
+						<li>The first 8 pages are the title page, table of contents, and then table of tables and figures which are all hyperlinked.</li>
+						<li>The first graph starts on page 12 of the document, so there are definitely some wasted pages.</li>
+						<li></li>
+					</ul>
+				</aside>
+			</section>
+
+		</section>
+
+		<section>
+			<h2>Future Directions</h2>
+			<section>
+				<h3>Known Issues/Limitations</h3>
+				<ul>
+					<li><a href="http://github.com/wbuchanan/eda"><code>eda</code></a> is not complete, but currently works.</li>
+					<li><code>bygraphs</code> tend to error out instead of returning an empty graph.</li>
+					<li><code>bygraphs</code> not implemented on all possible graphs yet.</li>
+					<li>Still need to add support for alpha layer transparency to <a href="https://wbuchanan.github.io/brewscheme"><code>brewscheme</code></a>.</li>
+				</ul>
+				<aside class="notes">
+					<ul>
+						<li>by options in Stata tend to fail instead of returning an empty graph.</li>
+						<li>There are likely to still be a fair number of bugs around.</li>
+						<li>Some others have started using the program and found problems that I have with Windows.</li>
+					</ul>
+				</aside>
+			</section>
+			<section>
+				<h3>Improvements</h3>
+				<ul>
+					<li>Refactor more of the code into Mata.</li>
+					<li>Need to find a faster way to generate all of the different graphs.</li>
+					<li>Markdown/<code>dyndoc</code> support.</li>
+				</ul>
+				<aside class="notes">
+					<ul>
+						<li>Need to figure out how to access tuples from Mata.</li>
+						<li>Is there anyway for Stata's graphics engine to become faster (e.g., GPU enabling, etc...)?</li>
+						<li>Make sure to ask the audience for questions and comments</li>
+					</ul>
+				</aside>
+			</section>
+		</section>
+
+	</div>
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+
+    Reveal.initialize({
+
+		width : "75%",
+
+        // Display presentation control arrows
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Set default timing of 2 minutes per slide
+        defaultTiming: 120,
+
+        // Display the page number of the current slide
+        slideNumber: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+//		autoSlide: 120000,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: false,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: Reveal.navigateNext,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // Hides the address bar on mobile devices
+        hideAddressBar: true,
+
+        // Opens links in an iframe preview overlay
+        // Add `data-preview-link` and `data-preview-link="false"` to customise each link
+        // individually
+        previewLinks: false,
+
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Transition speed
+        transitionSpeed: 'slow', // default/fast/slow
+
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Parallax background image
+        parallaxBackgroundImage: '', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
+        // Parallax background size
+        parallaxBackgroundSize: '', // CSS syntax, e.g. "2100px 900px"
+
+        // Number of pixels to move the parallax background per slide
+        // - Calculated automatically unless specified
+        // - Set to 0 to disable movement along an axis
+        parallaxBackgroundHorizontal: null,
+        parallaxBackgroundVertical: null,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        markdown: {
+            smartypants: true
+        },
+
+        math: {
+            mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+            config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
+        },
+
+		dependencies: [
+
+            // Cross-browser shim that fully implements classList - https://github.com/eligrey/classList.js/
+            { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+
+            // Interpret Markdown in <section> elements
+            { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+
+            // Syntax highlight for <code> elements
+            { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+
+            // Zoom in and out with Alt+click
+            { src: 'plugin/zoom-js/zoom.js', async: true },
+
+            // Speaker notes
+            { src: 'plugin/notes/notes.js', async: true },
+
+            // MathJax
+            { src: 'plugin/math/math.js', async: true }
+
+        ]
+
+    });
+
+</script>
+</body>
+</html>
